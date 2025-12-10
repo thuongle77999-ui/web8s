@@ -23,7 +23,7 @@ if ($conn->connect_error) {
 
 // 4. Thực thi truy vấn SELECT
 // Lấy tất cả các cột. Nên sắp xếp theo ID giảm dần để thấy người mới nhất trước.
-$sql = "SELECT id, ho_ten, nam_sinh, dia_chi, chuong_trinh, quoc_gia, sdt FROM $table_name ORDER BY id DESC";
+$sql = "SELECT id, ho_ten, nam_sinh, dia_chi, chuong_trinh, quoc_gia, sdt, ghi_chu FROM $table_name ORDER BY id DESC";
 
 $result = $conn->query($sql);
 $data = array();

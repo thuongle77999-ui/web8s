@@ -24,6 +24,7 @@ $dia_chi = $data['dia_chi'] ?? null;
 $chuong_trinh = $data['chuong_trinh'] ?? null;
 $quoc_gia = $data['quoc_gia'] ?? null;
 $sdt = $data['sdt'] ?? null;
+$ghi_chu = $data['ghi_chu'] ?? null;
 
 if (empty($id)) {
     http_response_code(400); // Bad Request
@@ -41,13 +42,13 @@ if ($conn->connect_error) {
 
 // 5. Chuẩn bị và Thực thi truy vấn UPDATE
 $sql = "UPDATE $table_name 
-        SET ho_ten=?, nam_sinh=?, dia_chi=?, chuong_trinh=?, quoc_gia=?, sdt=? 
+        SET ho_ten=?, nam_sinh=?, dia_chi=?, chuong_trinh=?, quoc_gia=?, sdt=? , ghi_chu=?
         WHERE id=?";
 
 $stmt = $conn->prepare($sql);
 
 // "ssssssi" : 6 tham số string và 1 tham số integer (id)
-$stmt->bind_param("ssssssi", $ho_ten, $nam_sinh, $dia_chi, $chuong_trinh, $quoc_gia, $sdt, $id);
+$stmt->bind_param("sssssssi", $ho_ten, $nam_sinh, $dia_chi, $chuong_trinh, $quoc_gia, $sdt, $ghi_chu, $id);
 
 if ($stmt->execute()) {
     if ($stmt->affected_rows > 0) {
