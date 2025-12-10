@@ -1,36 +1,36 @@
 <?php
-// 1. Cấu hình Headers
+// FILE: api_get_users.php (hoặc tên file mà Front-end đang gọi để lấy DS)
+
+// 1. Cấu hình Headers cho JSON
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *'); 
 header('Access-Control-Allow-Methods: GET');
-// Không cần nhận dữ liệu, chỉ cần gửi
-// header('Access-Control-Allow-Headers: ...'); 
+// ... (các headers khác)
 
 // 2. Thông tin kết nối Database
 $servername = "localhost";
-$username = "root";       
-$password = "";           
-$dbname = "db_nhanluc";   
-$table_name = "user";     
+$username = "root";       
+$password = "";           
+$dbname = "db_nhanluc";   
 
 // 3. Kết nối Database
 $conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    http_response_code(500);
-    die(json_encode(array("message" => "Lỗi kết nối Database.", "status" => false)));
-}
+// ... (Xử lý lỗi kết nối)
 
 // 4. Thực thi truy vấn SELECT
-// Lấy tất cả các cột. Nên sắp xếp theo ID giảm dần để thấy người mới nhất trước.
-$sql = "SELECT id, ho_ten, nam_sinh, dia_chi, chuong_trinh, quoc_gia, sdt, ghi_chu FROM $table_name ORDER BY id DESC";
-
+$sql = "SELECT ID, HoTen, SĐT, NamSinh, DiaChi, ChuongTrinh, QuocGia, GhiChu, created_at FROM user";
 $result = $conn->query($sql);
 $data = array();
 
 if ($result->num_rows > 0) {
-    // 5. Lặp qua các kết quả và đưa vào mảng
     while($row = $result->fetch_assoc()) {
+        // Xử lý ID
+        $created_time_str = $row['created_at']; 
+        $timestamp = strtotime($created_time_str); 
+        $formatted_time = date('y/m/d_H/i/s', $timestamp);
+        $display_id = $formatted_time . '_' . $row['ID']; 
+        
+        $row['display_ID'] = $display_id;
         $data[] = $row;
     }
     // Trả về dữ liệu thành công
@@ -44,5 +44,5 @@ if ($result->num_rows > 0) {
 
 // 6. Đóng kết nối
 $conn->close();
-
+// KHÔNG CÓ CODE NÀO KHÁC SAU DÒNG NÀY (Không có code xuất TXT)
 ?>
