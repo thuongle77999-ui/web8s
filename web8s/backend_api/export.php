@@ -1,58 +1,64 @@
 <?php
-// FILE: export_users.php (Chỉ dùng khi người dùng nhấn nút Tải xuống)
+// 1. Cấu hình Headers
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *'); 
+header('Access-Control-Allow-Methods: POST, GET');
+header('Access-Control-Allow-Headers: Content-Type');
 
-// 1. Cấu hình Headers TẢI XUỐNG FILE TXT
-header('Content-Encoding: UTF-8');
-header('Content-type: text/plain; charset=UTF-8');
-header('Content-Disposition: attachment; filename="danh_sach_nguoi_dung_' . date('Ymd_His') . '.txt"');
+date_default_timezone_set('Asia/Ho_Chi_Minh'); 
 
-// 2. Thông tin kết nối Database (Lặp lại hoặc include file cấu hình)
+// 2. Kết nối Database (giữ nguyên thông tin của bạn)
 $servername = "localhost";
-$username = "root";       
-$password = "";           
-$dbname = "db_nhanluc";   
-$table_name = "user";     
-
-// 3. Kết nối Database
+$username = "root";
+$password = ""; 
+$dbname = "db_nhanluc";
 $conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    // Ghi lỗi ra log hoặc dừng
-    die("Lỗi kết nối CSDL khi xuất file.");
+$conn->set_charset("utf8mb4");
+
+// 3. Tiếp nhận dữ liệu ID từ Frontend
+$data = json_decode(file_get_contents("php://input"), true);
+$ids = isset($data['ids']) ? $data['ids'] : [];
+
+// 4. Xây dựng câu truy vấn
+$sql = "SELECT id, ngay_nhan, ho_ten, sdt, nam_sinh, dia_chi, chuong_trinh, quoc_gia, ghi_chu FROM user";
+
+// Nếu có danh sách ID, thì lọc theo ID
+if (!empty($ids)) {
+    // Làm sạch mảng ID để tránh SQL Injection
+    $clean_ids = array_map('intval', $ids);
+    $id_list = implode(',', $clean_ids);
+    $sql .= " WHERE id IN ($id_list)";
 }
 
-// 4. Thực thi truy vấn SELECT
-$sql = "SELECT ID, HoTen, SĐT, NamSinh, DiaChi, ChuongTrinh, QuocGia, GhiChu, created_at FROM user";
+$sql .= " ORDER BY id ASC";
 $result = $conn->query($sql);
 
-// 5. Chuẩn bị nội dung file TXT
-$output_content = "ID_Dinh_Dang\tHo Ten\tSĐT\tNăm Sinh\tĐịa Chỉ\tChương Trình\tQuốc Gia\tGhi Chú\n"; 
+// 5. Xử lý xuất nội dung file (giữ nguyên logic cũ của bạn)
+if ($result && $result->num_rows > 0) {
+    $txt_content = "|ID|NGÀY NHẬN|HỌ TÊN|SĐT|NĂM SINH| ĐỊA CHỈ|CHƯƠNG TRÌNH|QUỐC GIA | GHI CHÚ|\n";
 
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        
-        // Logic xử lý ID
-        $timestamp = strtotime($row['created_at']); 
-        $formatted_time = date('y/m/d_H/i/s', $timestamp);
-        $display_id = $formatted_time . '_' . $row['ID']; 
-        
-        // Dùng tab (\t) để phân tách dữ liệu
-        $line = $display_id . "\t" . 
-                $row['HoTen'] . "\t" . 
-                $row['SĐT'] . "\t" . 
-                $row['NamSinh'] . "\t" . 
-                $row['DiaChi'] . "\t" . 
-                $row['ChuongTrinh'] . "\t" . 
-                $row['QuocGia'] . "\t" . 
-                ($row['GhiChu'] ?? '-') . "\n";
-                
-        $output_content .= $line;
+    while ($row = $result->fetch_assoc()) {
+        foreach ($row as $key => $value) {
+            $row[$key] = str_replace(["\n", "\r", "\t"], ' ', $value ?? '');
+        }
+        $line = "|" . $row['id'] . "| " . $row['ngay_nhan'] . "|" . $row['ho_ten'] . "| " . $row['sdt'] . "|" . $row['nam_sinh'] . "| " . $row['dia_chi'] . "|" . $row['chuong_trinh'] . "|" . $row['quoc_gia'] . "| " . $row['ghi_chu'] . "|";
+        $txt_content .= $line . "\n";
     }
+
+    $file_name = 'user_export_filtered_' . date('Ymd_His') . '.txt';
+    $export_dir = __DIR__ . '/exports/';
+    if (!is_dir($export_dir)) mkdir($export_dir, 0777, true);
+
+    $file_path = $export_dir . $file_name;
+    $success = file_put_contents($file_path, "\xEF\xBB\xBF" . $txt_content); 
+
+    if ($success) {
+        echo json_encode(array("status" => true, "file_url" => "backend_api/exports/" . $file_name));
+    } else {
+        echo json_encode(array("message" => "Lỗi ghi file.", "status" => false));
+    }
+} else {
+    echo json_encode(array("message" => "Không có dữ liệu.", "status" => false));
 }
-
-// 6. Xuất nội dung và đóng kết nối
-echo "\xEF\xBB\xBF"; // UTF-8 BOM cho tiếng Việt
-echo $output_content;
-
 $conn->close();
-exit; // Dừng script ngay lập tức
 ?>

@@ -1,0 +1,399 @@
+/* =========================================
+   FILE: style.css
+   MÔ TẢ: CSS CHUNG CHO TOÀN BỘ WEBSITE
+   ========================================= */
+
+/* ===== RESET & CẤU HÌNH CƠ BẢN ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Đẩy nội dung xuống để không bị Header (Fixed) che mất */
+body {
+    background: #f4f7fb;
+    /* Top Bar (40px) + Nav (60px) + khoảng hở 10px */
+    padding-top: 110px; 
+}
+
+a { text-decoration: none; }
+ul { list-style: none; }
+
+/* ===== MATERIAL ICON (NẾU DÙNG) ===== */
+.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 48;
+    user-select: none;
+}
+
+/* ===== 1. TOP BAR (MÀU ĐỎ - CỐ ĐỊNH) ===== */
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to right, #e60000, #ff4d4d); /* Gradient Đỏ */
+    color: #fff;
+    display: flex;
+    justify-content: center; /* Căn giữa nội dung */
+    align-items: center;
+    gap: 30px; /* Khoảng cách giữa Hotline và Nút */
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 2000; /* Lớp cao nhất */
+}
+
+.top-bar span {
+    display: flex; 
+    align-items: center; 
+    gap: 5px;
+}
+
+.top-bar a {
+    background: white;
+    color: #e60000;
+    padding: 4px 15px;
+    border-radius: 15px;
+    font-size: 12px;
+    transition: 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.top-bar a:hover { 
+    background: #ffe6e6; 
+    transform: translateY(-1px);
+}
+
+/* ===== 2. NAV MENU (MÀU XANH - CỐ ĐỊNH) ===== */
+nav {
+    position: fixed;
+    top: 40px; /* Nằm ngay dưới Top Bar */
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #0f75bd; /* Xanh ICOGroup */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 1999;
+    
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10%; /* Căn lề 2 bên 10% */
+}
+
+/* --- LOGO --- */
+.nav-logo {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 5px 15px;
+    border-radius: 5px;
+    height: 44px;
+}
+
+.nav-logo img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+/* --- MENU LIST --- */
+nav ul {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+nav ul li {
+    position: relative;
+    padding: 10px 0;
+}
+
+nav ul li > a {
+    color: white;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 15px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+nav ul li > a:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* Mũi tên menu con */
+.arrow {
+    font-size: 10px;
+    transition: transform 0.3s ease;
+}
+nav ul li:hover .arrow {
+    transform: rotate(180deg);
+}
+
+/* ===== 3. DROPDOWN (SUBMENU) ===== */
+.submenu {
+    display: none; /* Ẩn mặc định */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    min-width: 220px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    border-radius: 0 0 8px 8px;
+    padding: 10px 0;
+    z-index: 2001;
+    border-top: 3px solid #ff6600; /* Viền cam điểm nhấn */
+}
+
+/* Hiện submenu khi hover vào thẻ li cha */
+nav ul li:hover > .submenu,
+.submenu.show { /* Class .show dùng cho JS trên mobile/click */
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.submenu li { padding: 0; border-bottom: 1px solid #f0f0f0; }
+.submenu li:last-child { border-bottom: none; }
+
+.submenu li a {
+    padding: 12px 20px;
+    font-weight: normal;
+    color: #333;
+    display: block;
+    font-size: 14px;
+}
+
+.submenu li a:hover {
+    background: #f0f4ff;
+    color: #0f75bd;
+    padding-left: 25px; /* Hiệu ứng đẩy chữ sang phải */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 4. HERO BANNER & TEXT STRIP ===== */
+.hero-banner {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+.hero-banner img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.banner {
+    background: #003366;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    font-weight: bold;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ===== 5. SECTION: SLIDER & TEXT (2 CỘT) ===== */
+.two-column-section {
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    margin: 40px 0;
+    padding: 0 5%; /* Cách lề 2 bên 5% */
+    gap: 0; /* Liền mạch */
+    align-items: stretch;
+}
+
+/* Cột Trái: Slider */
+.left-slider {
+    flex: 6; /* 60% */
+    position: relative;
+    overflow: hidden;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.slider-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 450px;
+    overflow: hidden;
+}
+
+.slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    height: 100%;
+}
+
+.slider img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* Nút bấm Slider */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border-radius: 50%;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: 0.3s;
+}
+.prev { left: 15px; }
+.next { right: 15px; }
+.slider-btn:hover { background: #ff6600; }
+
+/* Cột Phải: Text */
+.right-text {
+    flex: 4; /* 40% */
+    background: white;
+    padding: 40px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.right-text h2 {
+    color: #0f75bd;
+    margin-bottom: 20px;
+    font-size: 24px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.right-text p {
+    margin-bottom: 20px;
+    color: #555;
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+/* ===== 6. FORM ĐĂNG KÝ ===== */
+.form-container {
+    max-width: 600px;
+    margin: 60px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-top: 5px solid #ff6600;
+}
+
+.form-container h3 {
+    text-align: center;
+    color: #ff6600;
+    margin-bottom: 30px;
+    font-size: 24px;
+    text-transform: uppercase;
+}
+
+.form-group { margin-bottom: 15px; }
+label { display: block; font-weight: 600; margin-bottom: 8px; color: #333; }
+
+input[type="text"], 
+input[type="tel"], 
+input[type="email"], 
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+input:focus, select:focus {
+    border-color: #0f75bd;
+    outline: none;
+    box-shadow: 0 0 5px rgba(15, 117, 189, 0.2);
+}
+
+button[type="submit"] {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    background: #ff6600;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+button[type="submit"]:hover { background: #cc5200; box-shadow: 0 5px 15px rgba(255, 102, 0, 0.3); }
+
+#message { text-align: center; margin-top: 20px; font-weight: bold; color: green; }
+
+/* ===== 7. FOOTER & BẢN ĐỒ ===== */
+.footer-section {
+    background: #002b6f;
+    color: white;
+    padding: 50px 20px;
+    margin-top: 50px;
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+@media (max-width: 768px) {
+    .top-bar { display: none; } /* Ẩn topbar trên mobile */
+    
+    body { padding-top: 70px; } /* Giảm khoảng cách body */
+
+    nav {
+        top: 0;
+        height: 60px;
+        padding: 0 15px;
+    }
+
+    /* Ẩn menu chính, hiện nút hamburger (cần thêm JS để xử lý nếu muốn) */
+    nav ul { display: none; } 
+    .nav-logo { height: 40px; padding: 5px; }
+
+    /* Layout cột dọc trên mobile */
+    .two-column-section {
+        flex-direction: column;
+        padding: 0 15px;
+        gap: 20px;
+    }
+
+    .left-slider, .right-text {
+        width: 100%;
+        border-radius: 10px;
+        flex: none;
+    }
+
+    .slider-container {
+        height: 250px;
+        min-height: auto;
+    }
+
+    .form-container {
+        margin: 30px 15px;
+        padding: 20px;
+    }
+}

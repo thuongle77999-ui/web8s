@@ -37,13 +37,11 @@
             const ADMIN_PASS = '123456'; 
 
             if (username === ADMIN_USER && password === ADMIN_PASS) {
-                // Đăng nhập thành công
-                localStorage.setItem('adminLoggedIn', 'true'); // Lưu trạng thái
-                window.location.href = 'admin.html'; // Chuyển hướng
+                localStorage.setItem('adminLoggedIn', 'true'); 
+                window.location.href = 'home.html'; 
             } else {
-                // Đăng nhập thất bại
                 errorElement.style.display = 'block';
-                document.getElementById('password').value = ''; // Xóa mật khẩu đã nhập
+                document.getElementById('password').value = ''; 
             }
         });
     </script>
